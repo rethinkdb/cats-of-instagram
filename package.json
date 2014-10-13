@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "express": "~4.8.7",
+    "rethinkdb": "~1.14.0-0",
+    "body-parser": "~1.7.0",
+    "requestify": "~0.1.16",
+    "socket.io": "~0.9.17",
+    "q": "~1.0.1"
+  }
+}

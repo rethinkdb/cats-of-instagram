@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app="recat">
+  <head>
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.runtime.min.js"></script>
+    
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/script/app.js"></script>
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.css">
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+
+    <div id="titlebar">
+      <div id="toggle">
+        <div class="button selected" id="grid-button">Grid</div>
+        <div class="button" id="map-button">Map</div>
+      </div>
+
+      <h1>Cats of Instagram</h1>
+    </div>
+
+    <div id="content">
+      <div id="cats"></div>
+      <div id="map"></div>
+    </div>
+
+    <script id="cat-template" type="text/x-handlebars-template">
+      <div class="cat">
+        <div class="user">{{user.full_name}}</div>
+        <div class="meta">
+          <div class="time">Posted at {{date}}</div>
+          <div class="caption">{{caption.text}}</div>
+        </div>
+        <img class="thumb" src="{{images.low_resolution.url}}">
+      </div>
+    </script>
+
+  </body>
+</html>
