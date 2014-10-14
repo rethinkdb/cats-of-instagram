@@ -1,5 +1,5 @@
 
-var requestify = require("requestify");
+var request = require("request");
 var bodyParser = require("body-parser");
 var express = require("express");
 var sockio = require("socket.io");
@@ -77,13 +77,11 @@ app.get("/subscribe/:tag", function(req, res) {
     object_id: req.params.tag,
     callback_url: "http://" + config.host + "/publish/photo"
   };
-  
-  requestify.post(api + "subscriptions", params, {dataType: "form-url-encoded"})
-  .then(function(response) {
-    res.json({subscribed: req.params.tag});
-  })
-  .fail(function(err) {
-    res.status(500).json({err: err});
+
+  request.post({url: api + "subscriptions", form: params},
+    function(err, response, body) {
+      if (err) res.status(500).json({err: err});
+      else res.json({subscribed: req.params.tag});
   });
 });
 
@@ -117,6 +115,4 @@ app.post("/publish/photo", function(req, res) {
       this.conn.close();
   });
 });
-
-
 
