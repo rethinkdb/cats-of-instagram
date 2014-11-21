@@ -3,6 +3,7 @@ var request = require("request");
 var bodyParser = require("body-parser");
 var express = require("express");
 var sockio = require("socket.io");
+var scmp = require("scmp");
 var crypto = require("crypto");
 var r = require("rethinkdb");
 var q = require("q");
@@ -86,7 +87,7 @@ io.sockets.on("connection", function(socket) {
 });
 
 app.get("/publish/photo", function(req, res) {
-  if (req.param("hub.verify_token") == config.instagram.verify)
+  if (scmp(req.param("hub.verify_token"), config.instagram.verify))
     res.send(req.param("hub.challenge"));
   else res.status(500).json({err: "Verify token incorrect"});
 });
@@ -96,7 +97,7 @@ app.use("/publish/photo", bodyParser.json({
     var hmac = crypto.createHmac("sha1", config.instagram.secret);
     var hash = hmac.update(buf).digest("hex");
 
-    if (req.header("X-Hub-Signature") == hash)
+    if (scmp(req.header("X-Hub-Signature"), hash))
       req.validOrigin = true;
   }
 }));
@@ -104,7 +105,7 @@ app.use("/publish/photo", bodyParser.json({
 app.post("/publish/photo", function(req, res) {
   if (!req.validOrigin)
     return res.status(500).json({err: "Invalid signature"});
-  
+
   var update = req.body[0];
   res.json({success: true, kind: update.object});
 
@@ -112,7 +113,7 @@ app.post("/publish/photo", function(req, res) {
   lastUpdate = update.time;
 
   var path = api + "tags/" + update.object_id +
-             "/media/recent?client_id=" + 
+             "/media/recent?client_id=" +
              config.instagram.client;
 
   r.connect(config.database).then(function(conn) {
