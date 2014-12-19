@@ -35,17 +35,18 @@ function subscribeToTag(tagName) {
   });
 }
 
-r.connect(config.database).then(function(conn) {
-  this.conn = conn;
+var conn;
+r.connect(config.database).then(function(c) {
+  conn = c;
   return r.dbCreate(config.database.db).run(conn);
 })
 .then(function() {
-  return r.tableCreate("instacat").run(this.conn);
+  return r.tableCreate("instacat").run(conn);
 })
 .then(function() {
   return q.all([
-    r.table("instacat").indexCreate("time").run(this.conn),
-    r.table("instacat").indexCreate("place", {geo: true}).run(this.conn)
+    r.table("instacat").indexCreate("time").run(conn),
+    r.table("instacat").indexCreate("place", {geo: true}).run(conn)
   ]);
 })
 .error(function(err) {
@@ -53,7 +54,7 @@ r.connect(config.database).then(function(conn) {
     console.log(err);
 })
 .finally(function() {
-  r.table("instacat").changes().run(this.conn)
+  r.table("instacat").changes().run(conn)
   .then(function(cursor) {
     cursor.each(function(err, item) {
       if (item && item.new_val)
@@ -68,8 +69,9 @@ r.connect(config.database).then(function(conn) {
 });
 
 io.sockets.on("connection", function(socket) {
-  r.connect(config.database).then(function(conn) {
-    this.conn = conn;
+  var conn;
+  r.connect(config.database).then(function(c) {
+    conn = c;
     return r.table("instacat")
       .orderBy({index: r.desc("time")})
       .limit(60).run(conn)
@@ -80,8 +82,8 @@ io.sockets.on("connection", function(socket) {
   })
   .error(function(err) { console.log("Failure:", err); })
   .finally(function() {
-    if (this.conn)
-      this.conn.close();
+    if (conn)
+      conn.close();
   });
 });
 
@@ -115,8 +117,9 @@ app.post("/publish/photo", function(req, res) {
              "/media/recent?client_id=" + 
              config.instagram.client;
 
-  r.connect(config.database).then(function(conn) {
-    this.conn = conn;
+  var conn;
+  r.connect(config.database).then(function(c) {
+    conn = c;
     return r.table("instacat").insert(
       r.http(path)("data").merge(function(item) {
         return {
@@ -129,8 +132,8 @@ app.post("/publish/photo", function(req, res) {
   })
   .error(function(err) { console.log("Failure:", err); })
   .finally(function() {
-    if (this.conn)
-      this.conn.close();
+    if (conn)
+      conn.close();
   });
 });
 
