@@ -54,6 +54,15 @@ r.connect(config.database).then(function(c) {
     console.log(err);
 })
 .finally(function() {
+  r.table("instacat")
+    .orderBy({index: r.desc("votes")}).limit(10)
+    .changes().run(conn)
+  .then(function(cursor) {
+    cursor.each(function(err, item) {
+      io.sockets.emit("leaderboard", item);
+    });
+  });
+
   r.table("instacat").changes().run(conn)
   .then(function(cursor) {
     cursor.each(function(err, item) {
@@ -79,6 +88,15 @@ io.sockets.on("connection", function(socket) {
   .then(function(cursor) { return cursor.toArray(); })
   .then(function(result) {
     socket.emit("recent", result);
+  })
+  .then(function() {
+    return r.table("instacat")
+      .orderBy({index: r.desc("votes")})
+      .limit(10).run(conn);
+  })
+  .then(function(cursor) { return cursor.toArray(); })
+  .then(function(result) {
+    socket.emit("leaderboard", result);
   })
   .error(function(err) { console.log("Failure:", err); })
   .finally(function() {
@@ -137,3 +155,29 @@ app.post("/publish/photo", function(req, res) {
   });
 });
 
+app.get("/cats", function(req, res) {
+  var conn;
+  r.connect(config.database).then(function(c) {
+    conn = c;
+    return r.table("instacat")
+      .orderBy({index: r.desc("time")})
+      .limit(10).run(conn)
+  })
+  .then(function(cursor) { return cursor.toArray(); })
+  .then(function(result) { res.json(result); })
+  .error(function(err) { res.json(err); })
+  .finally(function() { if (conn) conn.close(); });
+});
+
+app.get("/cats/:id/vote", function(req, res) {
+  var conn;
+  r.connect(config.database).then(function(c) {
+    conn = c;
+    return r.table("instacat").get(req.params.id)
+      .update({votes: r.row("votes").default(0).add(1)})
+      .run(conn)
+  })
+  .then(function(result) { res.json(result); })
+  .error(function(err) { res.json(err); })
+  .finally(function() { if (conn) conn.close(); });
+});

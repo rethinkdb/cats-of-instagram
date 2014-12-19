@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="Leaderboard">
+  <head>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+    
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="leaderboard.js"></script>
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body ng-controller="MainController">
+
+    <div id="titlebar">
+      <h1>Tinder for Cats Leaderboard</h1>
+    </div>
+
+    <div id="content">
+      <div id="cats">
+
+        <div class="cat" ng-repeat="cat in cats | orderBy: '-votes'">
+          <div class="user">Votes: {{cat.votes}}</div>
+          <div class="meta">
+            <div class="time">Posted at {{cat.date}}</div>
+            <div class="caption">{{cat.caption.text}}</div>
+          </div>
+          <img class="thumb" ng-src="{{cat.images.low_resolution.url}}">
+        </div>
+
+      </div>
+    </div>
+
+  </body>
+</html>
+

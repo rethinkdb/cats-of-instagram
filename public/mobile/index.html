@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+
+    <title>Tinder for Cats</title>
+
+    <script src="http://code.ionicframework.com/1.0.0-beta.13/js/ionic.bundle.js"></script>
+    <script src="http://code.ionicframework.com/contrib/ionic-contrib-tinder-cards/ionic.tdcards.js"></script>
+    <script src="http://code.ionicframework.com/collide/0.0.4/collide.js"></script>
+    
+    <script type="text/javascript" src="app.js"></script>
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="//code.ionicframework.com/1.0.0-beta.13/css/ionic.css">
+    <link rel="stylesheet" href="//code.ionicframework.com/contrib/ionic-contrib-tinder-cards/ionic.tdcards.css">
+    
+    <style>
+      td-cards {
+        display: block;
+      }
+
+      td-card {
+        position: absolute;
+        left: 50%;
+        margin-top: 80px;
+        margin-bottom: 40px;
+        margin-left: -125px;
+        width: 250px;
+        height: 200px;
+        overflow: hidden;
+
+        border: 1px solid #999;
+        box-shadow: 0px 1px 3px rgba(0,0,0,0.2);
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body ng-app="TinderCats" no-scroll>
+
+    <ion-pane ng-controller="AppController">
+      <ion-header-bar class="bar-positive">
+        <h1 class="title">Tinder for Cats</h1>
+      </ion-header-bar>
+
+      <td-cards>
+        <td-card ng-repeat="cat in cats"
+                 on-destroy="cardDestroyed($index)"
+                 on-swipe-left="swipedLeft($index)"
+                 on-swipe-right="swipedRight($index)">
+          <img ng-src="{{cat.images.low_resolution.url}}">
+        </td-card>
+      </td-cards>
+
+    </ion-pane>
+    
+  </body>
+</html>
+
