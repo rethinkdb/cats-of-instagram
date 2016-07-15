@@ -1,5 +1,10 @@
 # Cats of Instagram
 
+__Due to API changes, this demo is no longer working as of today. See https://github.com/rethinkdb/cats-of-instagram/issues/4 for details.__
+You can visit https://rethinkdb.com/blog/ or check out one of our other demo repositories in https://github.com/rethinkdb to find other RethinkDB demos.
+
+--
+
 This application shows cat pictures from Instagram in real time. It is built on top of RethinkDB and Instagram's PubSubHubbub API. When you start the application, it will subscribe to Instagram's `#catsofinstagram` tag. Instagram will send POST requests to your application every time a new image is posted with the tag.
 
 In order to receive the POST requests from Instagram, you must run the application at a publicly accessible address and specify the public host in the `config.js` file. For development purposes, it is generally most convenient to use something like [ngrok](https://ngrok.com/) to expose a locally-running instance of the application to the public Internet.
